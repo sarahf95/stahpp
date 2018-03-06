@@ -16,6 +16,59 @@ function getCurrentTabUrl(callback) {
     currentWindow: true
   };
 
+
+  function onInitFs(fs) {
+
+    fs.root.getFile('log.txt', {create: true, exclusive: true}, function(fileEntry) {
+  
+      fileEntry.isFile === true
+      fileEntry.name == 'blocked_websites.txt'
+      fileEntry.fullPath == '/blocked_websites.txt'
+  
+    }, errorHandler);
+  
+  }
+  
+  function errorHandler(e) {
+    var msg = '';
+  
+    switch (e.code) {
+      case FileError.QUOTA_EXCEEDED_ERR:
+        msg = 'QUOTA_EXCEEDED_ERR';
+        break;
+      case FileError.NOT_FOUND_ERR:
+        msg = 'NOT_FOUND_ERR';
+        break;
+      case FileError.SECURITY_ERR:
+        msg = 'SECURITY_ERR';
+        break;
+      case FileError.INVALID_MODIFICATION_ERR:
+        msg = 'INVALID_MODIFICATION_ERR';
+        break;
+      case FileError.INVALID_STATE_ERR:
+        msg = 'INVALID_STATE_ERR';
+        break;
+      default:
+        msg = 'Unknown Error';
+        break;
+    };
+  
+    console.log('Error: ' + msg);
+  }
+
+
+
+
+
+  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+  window.requestFileSystem(window.PERSISTENT, 5*1024*1024 , onInitFs, errorHandler)
+
+  window.webkitStorageInfo.requestQuota(PERSISTENT, 1024*1024, function(grantedBytes) {
+    window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
+  }, function(e) {
+    console.log('Error', e);
+  });
+
   chrome.tabs.query(queryInfo, (tabs) => {
     // chrome.tabs.query invokes the callback with a list of tabs that match the
     // query. When the popup is opened, there is certainly a window and at least
@@ -39,6 +92,7 @@ function getCurrentTabUrl(callback) {
     callback(domain);
   });
 
+
   // Most methods of the Chrome extension APIs are asynchronous. This means that
   // you CANNOT do something like this:
   //
@@ -48,6 +102,9 @@ function getCurrentTabUrl(callback) {
   // });
   // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
+
+
+
 
 /**
  * Change the background color of the current page.
