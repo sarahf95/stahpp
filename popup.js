@@ -5,7 +5,7 @@
 /**
  * Get the current URL.
  *
- * @param {function(string)} callback called when the URL of the current tab
+ * @param {function(string)} callback called when the domain of the current tab
  *   is found.
  */
 function getCurrentTabUrl(callback) {
@@ -33,11 +33,10 @@ function getCurrentTabUrl(callback) {
     // from |queryInfo|), then the "tabs" permission is required to see their
     // "url" properties.
     console.assert(typeof url == 'string', 'tab.url should be a string');
-    var tempUrl = new URL(url)
-    var domain = tempUrl.hostname
+    var domain = new URL(url).hostname
     document.getElementById("currentSite").innerHTML = domain;
     // alert(domain)
-    callback(url);
+    callback(domain);
   });
 
   // Most methods of the Chrome extension APIs are asynchronous. This means that
@@ -74,24 +73,24 @@ function changeBackgroundColor(color) {
  * @param {function(string)} callback called with the saved background color for
  *     the given url on success, or a falsy value if no color is retrieved.
  */
-function getSavedBackgroundColor(url, callback) {
+function getSavedBackgroundColor(domain, callback) {
   // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
   // for chrome.runtime.lastError to ensure correctness even when the API call
   // fails.
-  chrome.storage.sync.get(url, (items) => {
-    callback(chrome.runtime.lastError ? null : items[url]);
+  chrome.storage.sync.get(domain, (items) => {
+    callback(chrome.runtime.lastError ? null : items[domain]);
   });
 }
 
 /**
  * Sets the given background color for url.
  *
- * @param {string} url URL for which background color is to be saved.
+ * @param {string} domain URL for which background color is to be saved.
  * @param {string} color The background color to be saved.
  */
-function saveBackgroundColor(url, color) {
+function saveBackgroundColor(domain, color) {
   var items = {};
-  items[url] = color;
+  items[domain] = color;
   // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
   // optional callback since we don't need to perform any action once the
   // background color is saved.
@@ -107,13 +106,12 @@ function saveBackgroundColor(url, color) {
 // chrome.storage.local allows the extension data to be synced across multiple
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
-  getCurrentTabUrl((url) => {
+  getCurrentTabUrl((domain) => {
     var setWarningButton = document.getElementById('setWarningButton');
     console.log(setWarningButton)
-    alert(setWarningButton)
     // Load the saved background color for this page and modify the dropdown
     // value, if needed.
-    // getSavedBackgroundColor(url, (savedColor) => {
+    // getSavedBackgroundColor(domain, (savedColor) => {
     //   if (savedColor) {
     //     changeBackgroundColor(savedColor);
     //     dropdown.value = savedColor;
