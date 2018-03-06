@@ -35,7 +35,7 @@ function getCurrentTabUrl(callback) {
     console.assert(typeof url == 'string', 'tab.url should be a string');
     var tempUrl = new URL(url)
     var domain = tempUrl.hostname
-
+    document.getElementById("currentSite").innerHTML = domain;
     // alert(domain)
     callback(url);
   });
