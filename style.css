@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400');
+
+
 body {
     margin: 10px;
     white-space: nowrap;
@@ -5,10 +8,34 @@ body {
 
   h1 {
     font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    display: block;
+  }
+
+  h2 {
+      font-size: 15px;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
   }
 
   #container {
     align-items: center;
-    display: flex;
-    justify-content: space-between;
+    /* display: flex;
+    justify-content: space-between; */
+    width: 200px;
+  }
+
+  #setWarningButton{
+      padding-right: 12vw;
+      padding-left: 12vw;
+      padding-top: 10vw;
+      padding-bottom: 10vw;
+      background-color:#FDE18B;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      border: none;
+      border-radius: 12px;
+      font-size: 7vw;
+      text-align: center;
   }
