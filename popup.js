@@ -32,7 +32,7 @@ function getCurrentTabUrl(callback) {
     // If you want to see the URL of other tabs (e.g. after removing active:true
     // from |queryInfo|), then the "tabs" permission is required to see their
     // "url" properties.
-    console.assert(typeof url == 'string', 'tab.url should be a string');
+    console.assert(typeof url == 'string', 'tab.url should be a string');   
     var domain = new URL(url).hostname
     document.getElementById("currentSite").innerHTML = domain;
     // alert(domain)
@@ -55,6 +55,7 @@ function getCurrentTabUrl(callback) {
  * @param {string} color The new background color.
  */
 function changeBackgroundColor(color) {
+  // alert("changing color")
   var script = 'document.body.style.backgroundColor="' + color + '";';
   // See https://developer.chrome.com/extensions/tabs#method-executeScript.
   // chrome.tabs.executeScript allows us to programmatically inject JavaScript
@@ -69,15 +70,16 @@ function changeBackgroundColor(color) {
 /**
  * Gets the saved background color for url.
  *
- * @param {string} url URL whose background color is to be retrieved.
+ * @param {string} domain URL whose background color is to be retrieved.
  * @param {function(string)} callback called with the saved background color for
  *     the given url on success, or a falsy value if no color is retrieved.
  */
-function getSavedBackgroundColor(domain, callback) {
+function getSavedDomains(domain, callback) {
   // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
   // for chrome.runtime.lastError to ensure correctness even when the API call
   // fails.
   chrome.storage.sync.get(domain, (items) => {
+    console.log(items)
     callback(chrome.runtime.lastError ? null : items[domain]);
   });
 }
@@ -89,11 +91,12 @@ function getSavedBackgroundColor(domain, callback) {
  * @param {string} color The background color to be saved.
  */
 function saveBackgroundColor(domain, color) {
-  var items = {};
-  items[domain] = color;
+  var items = {domain: color};
+  // items[domain] = color;
   // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
   // optional callback since we don't need to perform any action once the
   // background color is saved.
+  console.log(items)
   chrome.storage.sync.set(items);
 }
 
@@ -107,22 +110,14 @@ function saveBackgroundColor(domain, color) {
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((domain) => {
+    console.log(domain)
     var setWarningButton = document.getElementById('setWarningButton');
     console.log(setWarningButton)
-    // Load the saved background color for this page and modify the dropdown
-    // value, if needed.
-    // getSavedBackgroundColor(domain, (savedColor) => {
-    //   if (savedColor) {
-    //     changeBackgroundColor(savedColor);
-    //     dropdown.value = savedColor;
-    //   }
-    // });
-
     // Ensure the background color is changed and saved when the dropdown
     // selection changes.
     setWarningButton.addEventListener("click", () => {
       changeBackgroundColor("green");
-      saveBackgroundColor(url, "green");
+      saveBackgroundColor(domain, "green");
     });
   });
 });
