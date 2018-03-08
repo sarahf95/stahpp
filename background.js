@@ -1,8 +1,4 @@
-// var currentSite = null;
 var currentDomain = null;
-// var currentTabId = null;
-// var startTime = null;
-// var lastActivitySeconds = 0;
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
         console.log("tab.onActivated");
@@ -11,31 +7,34 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             var url = tab.url
             console.assert(typeof url == 'string', 'tab.url should be a string');   
             currentDomain = getDomainFromUrl(url)
-            setBackgroundColor(currentDomain, "purple")
+            // setBackgroundColor(currentDomain, "purple")
         });  
  });
 
  chrome.tabs.onCreated.addListener((tab) => {
     console.log("tab.onCreated");
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        var tab = tabs[0];
-        var url = tab.url
-        console.assert(typeof url == 'string', 'tab.url should be a string');   
-        currentDomain = getDomainFromUrl(url)
-        setBackgroundColor(currentDomain, "blue")
-    });  
+    var url = tab.url
+    console.assert(typeof url == 'string', 'tab.url should be a string');   
+    currentDomain = getDomainFromUrl(url)
+    if(!localStorage.logs) {
+        localStorage.logs = JSON.stringify({});
+    } 
+    var logs = JSON.parse(localStorage.logs);
+    var sites = JSON.parse(localStorage.sites);
+    logs[currentDomain] = sites[currentDomain]
+    localStorage.logs = JSON.stringify(logs);
+    // setBackgroundColor(currentDomain, "blue") 
  })
 
-//  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {  
-//     console.log("tab.onUpdated");
-//     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-//         var tab = tabs[0];
-//         var url = tab.url
-//         console.assert(typeof url == 'string', 'tab.url should be a string');   
-//         currentDomain = getDomainFromUrl(url)
-//         setBackgroundColor(currentDomain, "yellow")
-//     });  
-//   });
+ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {  
+    console.log("tab.onUpdated");
+    var url = changeInfo.url
+    alert(url)
+    console.assert(typeof url == 'string', 'tab.url should be a string');   
+    currentDomain = getDomainFromUrl(url)
+    // setBackgroundColor(currentDomain, "yellow") 
+    // sendAlert(currentDomain)
+  });
 
   chrome.tabs.onHighlighted.addListener((highlightInfo) => {  
     console.log("tab.onHighlighted");
@@ -44,7 +43,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         var url = tab.url
         console.assert(typeof url == 'string', 'tab.url should be a string');   
         currentDomain = getDomainFromUrl(url)
-        setBackgroundColor(currentDomain, "pink")
+        // setBackgroundColor(currentDomain, "pink")
     });  
   });
 
@@ -56,7 +55,9 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             var url = tab.url
             console.assert(typeof url == 'string', 'tab.url should be a string');   
             currentDomain = getDomainFromUrl(url)
-            setBackgroundColor(currentDomain, "orange")
+            // setBackgroundColor(currentDomain, "orange")
+            console.log(currentDomain)
+            sendAlert(currentDomain)
         });           
     }
   });
@@ -76,8 +77,18 @@ function setBackgroundColor(site, color) {
       localStorage.sites = JSON.stringify(sites);
       console.log(localStorage.sites)
       chrome.tabs.executeScript({
-        code: `document.body.style.backgroundColor="${color}";`
+        code: `document.body.style.backgroundColor="${color}";`, runAt: 'document_start'
     });
+}
+
+function sendAlert(site) {
+    console.log("sendAlert")
+    if (localStorage.sites) {
+      var sites = JSON.parse(localStorage.sites);
+      console.log(sites[site])
+      if(sites[site]) {
+          alert("Are you sure you want to be on this site?")
+      }
 }
 
 // function updateCounter() {
@@ -130,20 +141,20 @@ function setBackgroundColor(site, color) {
 //       });
 //   }
 
-  function getCurrentTabUrl() {
-    var queryInfo = {
-      active: true,
-      currentWindow: true
-    };
+//   function getCurrentTabUrl(callback) {
+//     var queryInfo = {
+//       active: true,
+//       currentWindow: true
+//     };
   
-    chrome.tabs.query(queryInfo, (tabs) => {
-      var tab = tabs[0];
-      var url = tab.url
-      console.assert(typeof url == 'string', 'tab.url should be a string');   
-      currentDomain = getDomainFromUrl(url)
-    });
+//     chrome.tabs.query(queryInfo, (tabs) => {
+//       var tab = tabs[0];
+//       var url = tab.url
+//       console.assert(typeof url == 'string', 'tab.url should be a string');   
+//       currentDomain = getDomainFromUrl(url)
+//     });
   
-  }
+//   }
 
 //   function updateTime(site, color){
 //      if (!localStorage.sites) {
@@ -164,33 +175,52 @@ function setBackgroundColor(site, color) {
  
 //   }
 
-    function addBlock(site, color){
-        console.log("add block")
-        if (!localStorage.sites) {
-            localStorage.sites = JSON.stringify({});
-        }
-        console.log(localStorage.sites)
-        var sites = JSON.parse(localStorage.sites);
-        console.log(sites)
-        sites[site] = color;
-        localStorage.sites = JSON.stringify(sites);
-        chrome.tabs.executeScript({
-            code: 'document.body.style.backgroundColor="cyan";'
-        });
+    // function addBlock(site, color){
+    //     console.log("add block")
+    //     if (!localStorage.sites) {
+    //         localStorage.sites = JSON.stringify({});
+    //     }
+    //     console.log(localStorage.sites)
+    //     var sites = JSON.parse(localStorage.sites);
+    //     console.log(sites)
+    //     sites[site] = color;
+    //     localStorage.sites = JSON.stringify(sites);
+    //     chrome.tabs.executeScript({
+    //         code: 'document.body.style.backgroundColor="cyan";'
+    //     });
 
-    }
+    // }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        getCurrentTabUrl((domain) => {
-          console.log(domain)
-          var actionButton = document.getElementById("actionButton");
-          document.getElementById("currentSite").innerHTML = domain;
-          actionButton.addEventListener("click", () => {
-            console.log("onclick")
-            addBlock(domain, "orange")
-          });
-        });
-      });
+    // console.log(document.getElementById('actionButton'))
+
+    // if(document.readyState == 'complete') {
+    //     console.log(document)
+    //     console.log("is complete")
+    //     getCurrentTabUrl((domain) => {
+    //         console.log(domain)
+    //         var actionButton = document.getElementById('actionButton');
+    //         document.getElementById('currentSite').innerHTML = domain;
+    //         actionButton.addEventListener("click", () => {
+    //             console.log("onclick")
+    //             addBlock(domain, "orange")
+    //         });
+    //         });
+    // }else {
+     
+    //     console.log("is NOT complete")
+    //     document.addEventListener('DOMContentLoaded', () => {
+    //         console.log("add event listener: " + document)
+    //         getCurrentTabUrl((domain) => {
+    //         console.log(domain)
+    //         var actionButton = document.getElementById('actionButton');
+    //         document.getElementById('currentSite').innerHTML = domain;
+    //         actionButton.addEventListener("click", () => {
+    //             console.log("onclick")
+    //             addBlock(domain, "orange")
+    //         });
+    //         });
+    //     });
+    // }
 
 
 //       getCurrentTabUrl((domain) => {

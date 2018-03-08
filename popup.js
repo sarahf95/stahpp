@@ -143,3 +143,47 @@
 //     });
 //   });
 // });
+
+function getCurrentTabUrl(callback) {
+  var queryInfo = {
+    active: true,
+    currentWindow: true
+  };
+
+  chrome.tabs.query(queryInfo, (tabs) => {
+    var tab = tabs[0];
+    var url = tab.url;
+    var domain = new URL(url).hostname
+    console.assert(typeof url == 'string', 'tab.url should be a string');
+    document.getElementById('currentSite').innerHTML = domain;
+    callback(domain);
+  });
+}
+
+function addBlock(site, color){
+  console.log("add block")
+  if (!localStorage.sites) {
+      localStorage.sites = JSON.stringify({});
+  }
+  console.log(localStorage.sites)
+  var sites = JSON.parse(localStorage.sites);
+  console.log(sites)
+  sites[site] = color;
+  localStorage.sites = JSON.stringify(sites);
+  chrome.tabs.executeScript({
+      code: `document.body.style.backgroundColor="${color}";`
+  });
+
+}
+
+  document.addEventListener('DOMContentLoaded', () => {
+      console.log("add event listener: " + document)
+      getCurrentTabUrl((domain) => {
+      console.log(domain)
+      var actionButton = document.getElementById('actionButton');
+      actionButton.addEventListener("click", () => {
+          console.log("onclick")
+          addBlock(domain, "cyan")
+      });
+      });
+  });
