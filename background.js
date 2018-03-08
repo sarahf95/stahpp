@@ -16,13 +16,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     var url = tab.url
     console.assert(typeof url == 'string', 'tab.url should be a string');   
     currentDomain = getDomainFromUrl(url)
-    if(!localStorage.logs) {
-        localStorage.logs = JSON.stringify({});
-    } 
-    var logs = JSON.parse(localStorage.logs);
     var sites = JSON.parse(localStorage.sites);
-    logs[currentDomain] = sites[currentDomain]
-    localStorage.logs = JSON.stringify(logs);
     // setBackgroundColor(currentDomain, "blue") 
  })
 
@@ -33,7 +27,6 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     console.assert(typeof url == 'string', 'tab.url should be a string');   
     currentDomain = getDomainFromUrl(url)
     // setBackgroundColor(currentDomain, "yellow") 
-    // sendAlert(currentDomain)
   });
 
   chrome.tabs.onHighlighted.addListener((highlightInfo) => {  
@@ -57,7 +50,13 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             currentDomain = getDomainFromUrl(url)
             // setBackgroundColor(currentDomain, "orange")
             console.log(currentDomain)
-            sendAlert(currentDomain)
+            // sendAlert(currentDomain)
+            var logs = JSON.parse(localStorage.logs)
+            var sites = JSON.parse(localStorage.sites)
+            logs[currentDomain] = sites
+            if(sites.includes(currentDomain)) {
+                sendAlert(currentDomain)
+            }
         });           
     }
   });
@@ -69,7 +68,7 @@ function getDomainFromUrl(url) {
 function setBackgroundColor(site, color) {
     console.log("setBackGroundColor")
     if (!localStorage.sites) {
-        localStorage.sites = JSON.stringify({});
+        localStorage.sites = JSON.stringify([]);
       }
       var sites = JSON.parse(localStorage.sites);
       sites[site] = color;
@@ -89,6 +88,7 @@ function sendAlert(site) {
       if(sites[site]) {
           alert("Are you sure you want to be on this site?")
       }
+}
 }
 
 // function updateCounter() {
@@ -158,7 +158,7 @@ function sendAlert(site) {
 
 //   function updateTime(site, color){
 //      if (!localStorage.sites) {
-//         localStorage.sites = JSON.stringify({});
+//         localStorage.sites = JSON.stringify([]);
 //       }
 //       console.log("updateTime")
 //        var sites = JSON.parse(localStorage.sites);
