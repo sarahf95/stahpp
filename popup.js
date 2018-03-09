@@ -32,21 +32,21 @@ document.addEventListener('DOMContentLoaded', () => {
     var button = document.getElementById('actionButton');
     getSavedStatus(domain, (status) => {
       if (status) {
-        console.log("it was saved!")
+        console.log("it was saved!");
       }
     });
     button.addEventListener('click', () => {
       if(!localStorage.sites) {
         localStorage.sites = JSON.stringify({})
       }
-      var sites = JSON.parse(localStorage.sites)
+      var sites = JSON.parse(localStorage.sites);
       if(!sites[domain]) {
         //{"mon":true, "tue":true, "wed":true, "thu":true, "fri":true, "sat":true, "sun":true}
-        sites[domain] = true
-        localStorage.sites = JSON.stringify(sites)
-        alert("saved")
+        sites[domain] = true;
+        localStorage.sites = JSON.stringify(sites); 
+        console.log("saved");
       } else {
-        alert("already saved")
+        console.log("already saved");
       }
 
     });
