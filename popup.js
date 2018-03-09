@@ -39,12 +39,12 @@ function setActionButtonListener(button, domain) {
   button.addEventListener('click', () => {
     if (button.className == "addWarning") {
       button.innerHTML = "Saved"
-      button.setAttribute("class", "savedWarning")
+      button.setAttribute("class", "savedAdd")
       button.setAttribute("disabled", "disabled")
       addWarning(domain)
     } else if (button.className == "removeWarning") {
       button.innerHTML = "Removed Warning";
-      button.setAttribute("class", "savedWarning")
+      button.setAttribute("class", "savedRemove")
       button.setAttribute("disabled", "disabled")
       removeWarning(domain)
     }
@@ -104,7 +104,6 @@ function setEditButtonListener(button, domain) {
         sites[domain] = value
         localStorage.sites = JSON.stringify(sites);
       }
-      button.setAttribute("disabled", "disabled")
     }
   })
 }
