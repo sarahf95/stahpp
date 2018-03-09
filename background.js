@@ -1,3 +1,5 @@
+var currentDomain = ""
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!localStorage.logs) {
         localStorage.logs = JSON.stringify({})
@@ -5,11 +7,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     chrome.tabs.query({"active": true, "currentWindow": true}, (tabs) => {
         let tab = tabs[0]
         let domain = new URL(tab.url).hostname
-        if (localStorage.sites) {
-            var sites = JSON.parse(localStorage.sites);
-            if (sites[domain]) {
-                alert(`Are you sure you want to spend time at ${domain}`)
-                // alert("onUpdated")
+        if(domain != currentDomain) {
+            currentDomain = domain
+            if (localStorage.sites) {
+                var sites = JSON.parse(localStorage.sites);
+                if (sites[domain]) {
+                    alert(`Are you sure you want to spend time at ${domain}`)
+                    // alert("onUpdated")
+                }
             }
         }
     })
@@ -59,6 +64,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     // localStorage.logs = JSON.stringify(logs);
     chrome.tabs.get(activeInfo.tabId, (tab) => {
         let domain = new URL(tab.url).hostname
+        currentDomain = domain
         if (localStorage.sites) {
             var sites = JSON.parse(localStorage.sites);
             if (sites[domain]) {
