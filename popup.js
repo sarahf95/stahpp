@@ -30,6 +30,7 @@ function getSavedStatus(domain, callback) {
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((domain) => {
     var button = document.getElementById('actionButton');
+    document.getElementById('currentSite').innerHTML = domain
     getSavedStatus(domain, (status) => {
       if (status) {
         console.log("it was saved!");
