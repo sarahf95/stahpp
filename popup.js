@@ -1,123 +1,125 @@
-// Copyright (c) 2014 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-/**
- * Get the current URL.
- *
- * @param {function(string)} callback called when the domain of the current tab
- *   is found.
- */
 function getCurrentTabUrl(callback) {
-  // Query filter to be passed to chrome.tabs.query - see
-  // https://developer.chrome.com/extensions/tabs#method-query
   var queryInfo = {
     active: true,
     currentWindow: true
   };
 
   chrome.tabs.query(queryInfo, (tabs) => {
-    // chrome.tabs.query invokes the callback with a list of tabs that match the
-    // query. When the popup is opened, there is certainly a window and at least
-    // one tab, so we can safely assume that |tabs| is a non-empty array.
-    // A window can only have one active tab at a time, so the array consists of
-    // exactly one tab.
     var tab = tabs[0];
-
-    // A tab is a plain object that provides information about the tab.
-    // See https://developer.chrome.com/extensions/tabs#type-Tab
-    var url = tab.url
-
-    // tab.url is only available if the "activeTab" permission is declared.
-    // If you want to see the URL of other tabs (e.g. after removing active:true
-    // from |queryInfo|), then the "tabs" permission is required to see their
-    // "url" properties.
-    console.assert(typeof url == 'string', 'tab.url should be a string');   
+    var url = tab.url;
+    console.assert(typeof url == 'string', 'tab.url should be a string');
     var domain = new URL(url).hostname
-    document.getElementById("currentSite").innerHTML = domain;
-    // alert(domain)
     callback(domain);
   });
-
-  // Most methods of the Chrome extension APIs are asynchronous. This means that
-  // you CANNOT do something like this:
-  //
-  // var url;
-  // chrome.tabs.query(queryInfo, (tabs) => {
-  //   url = tabs[0].url;
-  // });
-  // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
-/**
- * Change the background color of the current page.
- *
- * @param {string} color The new background color.
- */
-function changeBackgroundColor(color) {
-  // alert("changing color")
-  var script = 'document.body.style.backgroundColor="' + color + '";';
-  // See https://developer.chrome.com/extensions/tabs#method-executeScript.
-  // chrome.tabs.executeScript allows us to programmatically inject JavaScript
-  // into a page. Since we omit the optional first argument "tabId", the script
-  // is inserted into the active tab of the current window, which serves as the
-  // default.
-  chrome.tabs.executeScript({
-    code: script
-  });
-}
-
-/**
- * Gets the saved background color for url.
- *
- * @param {string} domain URL whose background color is to be retrieved.
- * @param {function(string)} callback called with the saved background color for
- *     the given url on success, or a falsy value if no color is retrieved.
- */
-function getSavedDomains(domain, callback) {
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
-  // for chrome.runtime.lastError to ensure correctness even when the API call
-  // fails.
-  chrome.storage.sync.get(domain, (items) => {
-    console.log(items)
-    callback(chrome.runtime.lastError ? null : items[domain]);
-  });
-}
-
-/**
- * Sets the given background color for url.
- *
- * @param {string} domain URL for which background color is to be saved.
- * @param {string} color The background color to be saved.
- */
-function saveBackgroundColor(domain, color) {
-  var items = {domain: color};
-  // items[domain] = color;
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
-  // optional callback since we don't need to perform any action once the
-  // background color is saved.
-  console.log(items)
-  chrome.storage.sync.set(items);
-}
-
-// This extension loads the saved background color for the current tab if one
-// exists. The user can select a new background color from the dropdown for the
-// current page, and it will be saved as part of the extension's isolated
-// storage. The chrome.storage API is used for this purpose. This is different
-// from the window.localStorage API, which is synchronous and stores data bound
-// to a document's origin. Also, using chrome.storage.sync instead of
-// chrome.storage.local allows the extension data to be synced across multiple
-// user devices.
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((domain) => {
-    console.log(domain)
-    var setWarningButton = document.getElementById('setWarningButton');
-    console.log(setWarningButton)
-    // Ensure the background color is changed and saved when the dropdown
-    // selection changes.
-    setWarningButton.addEventListener("click", () => {
-      changeBackgroundColor("green");
-      saveBackgroundColor(domain, "green");
-    });
+    var actionButton = document.getElementById('actionButton');
+    var editButton = document.getElementById('editButton');
+    document.getElementById('currentSite').innerHTML = domain
+
+    setActionButtonLabel(actionButton, domain)
+    setActionButtonListener(actionButton, domain)
+
+    toggleEditButton(editButton, actionButton)
+    setEditButtonListener(editButton, domain)
   });
 });
+
+function toggleEditButton(edit, action) {
+  if (action.className == "addWarning") {
+    edit.style.display = "none";
+  } else if (action.className == "removeWarning") {
+    edit.style.display = "block";
+  }
+}
+
+function setActionButtonListener(button, domain) {
+  button.addEventListener('click', () => {
+    if (button.className == "addWarning") {
+      button.innerHTML = "Saved"
+      button.setAttribute("class", "savedAdd")
+      button.setAttribute("disabled", "disabled")
+      addWarning(domain)
+    } else if (button.className == "removeWarning") {
+      button.innerHTML = "Removed Warning";
+      button.setAttribute("class", "savedRemove")
+      button.setAttribute("disabled", "disabled")
+      removeWarning(domain)
+    }
+  });
+}
+
+function setActionButtonLabel(button, domain) {
+  if (localStorage.sites) {
+    var sites = JSON.parse(localStorage.sites)
+    var isBlocked = sites[domain] == null ? false : true
+    if (isBlocked) {
+      button.innerHTML = "Disable Warnings";
+      button.setAttribute("class", "removeWarning")
+      showCurrentWarningDays(sites[domain])
+    } else {
+      button.innerHTML = "Set Warnings";
+      button.setAttribute("class", "addWarning")
+    }
+  } else {
+    button.innerHTML = "Set Warnings";
+    button.setAttribute("class", "addWarning")
+  }
+}
+
+function showCurrentWarningDays(value) {
+  var checkboxes = document.getElementsByName('day');
+  for (var i = 0; i < checkboxes.length; ++i) {
+    let day = checkboxes[i]
+    let dow = day.value
+    day.checked = value[dow]
+  }
+}
+
+function removeWarning(domain) {
+  if (localStorage.sites) {
+    var sites = JSON.parse(localStorage.sites);
+    if (sites[domain]) {
+      delete sites[domain]
+      localStorage.sites = JSON.stringify(sites);
+    }
+  }
+}
+
+
+function setEditButtonListener(button, domain) {
+  button.addEventListener('click', () => {
+    if (localStorage.sites) {
+      var sites = JSON.parse(localStorage.sites);
+      if (sites[domain]) {
+        var value = sites[domain]
+        var checkboxes = document.getElementsByName('day');
+        for (var i = 0; i < checkboxes.length; ++i) {
+          let day = checkboxes[i]
+          let dow = day.value
+          value[dow] = day.checked
+        }
+        sites[domain] = value
+        localStorage.sites = JSON.stringify(sites);
+      }
+    }
+  })
+}
+
+function addWarning(domain) {
+  if (!localStorage.sites) {
+    localStorage.sites = JSON.stringify({})
+  }
+  var sites = JSON.parse(localStorage.sites);
+  var value = { "mon": true, "tue": true, "wed": true, "thu": true, "fri": true, "sat": true, "sun": true }
+  var checkboxes = document.getElementsByName('day');
+  for (var i = 0; i < checkboxes.length; ++i) {
+    let day = checkboxes[i]
+    let dow = day.value
+    value[dow] = day.checked
+  }
+  sites[domain] = value
+  localStorage.sites = JSON.stringify(sites);
+}

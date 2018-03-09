@@ -10,7 +10,14 @@
      "default_title": "Stahpp!"
     },
     "permissions": [
+      "tabs",
       "activeTab",
-      "storage"
-    ]
+      "storage", 
+      "<all_urls>"
+    ], 
+    "background": {
+      "scripts": [
+      "background.js"
+      ]
+    }
 }

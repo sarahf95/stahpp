@@ -23,7 +23,20 @@
   <div id="container">
     <h1>stahpp</h1>
     <h2 id="currentSite"></h2>
-    <button type=button id="setWarningButton">Set Warning</button>
+    <h5 id="formLabel">Edit days warnings show up</h5>
+    <form id="editDaysForm">
+      <input type="checkbox" name="day" value="sun" checked>Sunday</input><br />
+      <input type="checkbox" name="day" value="mon" checked>Monday</input> <br />
+      <input type="checkbox" name="day" value="tue" checked>Tuesday</input> <br />
+      <input type="checkbox" name="day" value="wed" checked>Wednesday</input> <br />
+      <input type="checkbox" name="day" value="thu" checked>Thursday</input> <br />
+      <input type="checkbox" name="day" value="fri" checked>Friday</input> <br />
+      <input type="checkbox" name="day" value="sat" checked>Saturday</input> <br />
+    </form>
+    <button type=button id="editButton">Edit</button>
+    <button type=button id="actionButton"></button>
   </div>
 
-</body></html>
+</body>
+
+</html>
