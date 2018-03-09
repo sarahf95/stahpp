@@ -1,18 +1,19 @@
 var currentDomain = ""
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (!localStorage.logs) {
-        localStorage.logs = JSON.stringify({})
+    if (!localStorage.sites) {
+        localStorage.sites = JSON.stringify({})
     }
+    var sites = JSON.parse(localStorage.sites);
     chrome.tabs.query({"active": true, "currentWindow": true}, (tabs) => {
         let tab = tabs[0]
         let domain = new URL(tab.url).hostname
         if(domain != currentDomain) {
             currentDomain = domain
             if (localStorage.sites) {
-                var sites = JSON.parse(localStorage.sites);
                 if (sites[domain]) {
                     alert(`Are you sure you want to spend time at ${domain}`)
+
                     // alert("onUpdated")
                 }
             }
