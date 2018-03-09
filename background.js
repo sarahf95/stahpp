@@ -2,34 +2,48 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!localStorage.logs) {
         localStorage.logs = JSON.stringify({})
     }
-    console.log("in onUpdated")
-    alert("in updated")
-    // chrome.tabs.get(changeInfo.url, (tab) => {
-        // let domain = new URL(tab.url).hostname
-        alert("tabid", tabId)
+    chrome.tabs.query({"active": true, "currentWindow": true}, (tabs) => {
+        let tab = tabs[0]
+        let domain = new URL(tab.url).hostname
         if (localStorage.sites) {
             var sites = JSON.parse(localStorage.sites);
             if (sites[domain]) {
-                alert(`Are you sure you want to spend time at ${changeInfo.url}`)
+                alert(`Are you sure you want to spend time at ${domain}`)
+                // alert("onUpdated")
             }
         }
-    // })
+    })
 })
 
+/**
+ *   var queryInfo = {
+    active: true,
+    currentWindow: true
+  };
 
-chrome.tabs.onCreated.addListener((tab) => {
-    if (!localStorage.logs) {
-        localStorage.logs = JSON.stringify({})
-    }
-    console.log("in onCreated")
-    let domain = new URL(tab.url).hostname
-    if (localStorage.sites) {
-        var sites = JSON.parse(localStorage.sites);
-        if (sites[domain]) {
-            alert(`Are you sure you want to spend time at ${domain}`)
-        }
-    }
-})
+  chrome.tabs.query(queryInfo, (tabs) => {
+    var tab = tabs[0];
+    var url = tab.url;
+    console.assert(typeof url == 'string', 'tab.url should be a string');
+    var domain = new URL(url).hostname
+    callback(domain);
+  });
+ */
+
+
+// chrome.tabs.onCreated.addListener((tab) => {
+//     if (!localStorage.logs) {
+//         localStorage.logs = JSON.stringify({})
+//     }
+//     let domain = new URL(tab.url).hostname
+//     if (localStorage.sites) {
+//         var sites = JSON.parse(localStorage.sites);
+//         if (sites[domain]) {
+//             // alert(`Are you sure you want to spend time at ${domain}`)
+//             alert("onCreated")
+//         }
+//     }
+// })
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
     if (!localStorage.logs) {
@@ -49,6 +63,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             var sites = JSON.parse(localStorage.sites);
             if (sites[domain]) {
                 alert(`Are you sure you want to spend time at ${domain}`)
+                // alert("onActivated")
             }
         }
     })
@@ -65,7 +80,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 //         if (localStorage.sites) {
 //             var sites = JSON.parse(localStorage.sites);
 //             if (sites[domain]) {
-//                 alert(`Are you sure you want to spend time at ${domain}`)
+                // alert(`Are you sure you want to spend time at ${domain}`)
 //             }
 //         }
 //     })
