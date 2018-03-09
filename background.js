@@ -3,15 +3,17 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         localStorage.logs = JSON.stringify({})
     }
     console.log("in onUpdated")
-    chrome.tabs.get(changeInfo.tabId, (tab) => {
-        let domain = new URL(tab.url).hostname
+    alert("in updated")
+    // chrome.tabs.get(changeInfo.url, (tab) => {
+        // let domain = new URL(tab.url).hostname
+        alert("tabid", tabId)
         if (localStorage.sites) {
             var sites = JSON.parse(localStorage.sites);
             if (sites[domain]) {
-                alert(`Are you sure you want to spend time at ${domain}`)
+                alert(`Are you sure you want to spend time at ${changeInfo.url}`)
             }
         }
-    })
+    // })
 })
 
 
@@ -52,22 +54,22 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     })
 })
 
-chrome.tabs.onHighlighted.addListener((highlightInfo) => {
+// chrome.tabs.onHighlighted.addListener((highlightInfo) => {
 
-    if (!localStorage.logs) {
-        localStorage.logs = JSON.stringify({})
-    }
-    console.log("in onHighlighted")
-    chrome.tabs.get(highlightInfo.tabIds[0], (tab) => {
-        let domain = new URL(tab.url).hostname
-        if (localStorage.sites) {
-            var sites = JSON.parse(localStorage.sites);
-            if (sites[domain]) {
-                alert(`Are you sure you want to spend time at ${domain}`)
-            }
-        }
-    })
-})
+//     if (!localStorage.logs) {
+//         localStorage.logs = JSON.stringify({})
+//     }
+//     console.log("in onHighlighted")
+//     chrome.tabs.get(highlightInfo.tabIds[0], (tab) => {
+//         let domain = new URL(tab.url).hostname
+//         if (localStorage.sites) {
+//             var sites = JSON.parse(localStorage.sites);
+//             if (sites[domain]) {
+//                 alert(`Are you sure you want to spend time at ${domain}`)
+//             }
+//         }
+//     })
+// })
 
 
 ///////
