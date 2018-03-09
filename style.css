@@ -26,12 +26,11 @@ body {
     width: 200px;
   }
 
-  #setWarningButton{
+  #actionButton{
       padding-right: 12vw;
       padding-left: 12vw;
       padding-top: 10vw;
       padding-bottom: 10vw;
-      background-color:#FDE18B;
       font-family: 'Roboto', sans-serif;
       font-weight: 400;
       border: none;
@@ -41,9 +40,13 @@ body {
   }
 
   .addWarning{
-    background-color: yellow;
+    background-color: #FDE18B;
   }
 
   .removeWarning{
-    background-color: red;
+    background-color: #FC7272;
+  }
+
+  .savedWarning{
+    background-color: #b9c4cd;
   }
