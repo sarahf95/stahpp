@@ -21,8 +21,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
-    if (!localStorage.logs) {
-        localStorage.logs = JSON.stringify({})
+    if (!localStorage.sites) {
+        localStorage.sites = JSON.stringify({})
     }
     chrome.tabs.get(activeInfo.tabId, (tab) => {
         let domain = new URL(tab.url).hostname
