@@ -39,3 +39,11 @@ body {
       font-size: 7vw;
       text-align: center;
   }
+
+  .addWarning{
+    background-color: yellow;
+  }
+
+  .removeWarning{
+    background-color: red;
+  }
