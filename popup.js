@@ -35,16 +35,6 @@ function toggleEditButton(edit, action) {
   }
 }
 
-// function setCheckboxListener() {
-//   $("input[name='day']").each(() => {
-//   addEventListener('change', () => {
-//       let checked = checkbox.is(':checked')
-//       console.log(checkbox.value)
-//   });
-// })
-// }
-
-
 function setActionButtonListener(button, domain) {
   button.addEventListener('click', () => {
     if (button.className == "addWarning") {

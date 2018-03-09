@@ -45,33 +45,44 @@ body {
       padding-top: 10vw;
       padding-bottom: 10vw;
       font-family: 'Roboto', sans-serif;
-      font-weight: 375;
       border: none;
       border-radius: 12px;
-      font-size: 7vw;
       text-align: center;
   }
 
   #editButton {
-    padding-right: 6vw;
-    padding-left: 6vw;
-    padding-top: 5vw;
-    padding-bottom: 5vw;
+    padding-right: 12vw;
+    padding-left: 12vw;
+    padding-top: 10vw;
+    padding-bottom: 10vw;
     font-family: 'Roboto', sans-serif;
-    font-weight: 400;
+    font-weight: 375;
     border: none;
-    border-radius: 6px;
-    font-size: 5vw;
-    text-align: center; 
+    font-size: 7vw;
+    border-radius: 12px;
+    text-align: center;
     background-color: #97b6cd;
     margin-bottom: 10
   }
 
   .addWarning{
+    padding-right: 12vw;
+    padding-left: 12vw;
+    padding-top: 10vw;
+    padding-bottom: 10vw;
+    font-weight: 375;
+    font-size: 7vw;
     background-color: #FDE18B;
   }
 
   .removeWarning{
+    padding-right: .2vw;
+    padding-left: .2vw;
+    padding-top: .1vw;
+    padding-bottom: .1vw;
+    font-weight: 350;
+    border-radius: 6px;
+    font-size: 5vw;
     background-color: #FC7272;
   }
 
