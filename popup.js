@@ -13,6 +13,7 @@ function getCurrentTabUrl(callback) {
   });
 }
 
+// Add information to the popup
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((domain) => {
     var actionButton = document.getElementById('actionButton');
@@ -96,21 +97,6 @@ function setActionButtonLabel(button, domain) {
     button.setAttribute("class", "addWarning")
   }
 }
-
-// function setEditButtonLabel(editButton, domain) {
-//   if (editButton.className = "edit") {
-//     disableCheckBoxes();
-//     disableSlider();
-//     editButton.innerHTML = "Edit";
-//   } else if(editButton.className = "none"){
-//     enableCheckBoxes();
-//     enableSlider();
-//   }
-//   // } else if(editButton.className = "save"){
-//   //   editButton.innerHTML = "Save"
-//   //   editButton.setAttribute("class", "save")
-//   // }
-// }
 
 function showCurrentWarningDays(value) {
   var checkboxes = document.getElementsByName('day');
