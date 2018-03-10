@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     toggleEditButton(editButton, actionButton)
     setEditButtonListener(editButton, domain)
+
+    setSliderListener()
   });
 });
 
@@ -40,15 +42,26 @@ function setActionButtonListener(button, domain) {
     if (button.className == "addWarning") {
       button.innerHTML = "Saved"
       button.setAttribute("class", "savedAdd")
-      button.setAttribute("disabled", "disabled")
+      button.disabled = true
       addWarning(domain)
     } else if (button.className == "removeWarning") {
       button.innerHTML = "Removed Warning";
       button.setAttribute("class", "savedRemove")
-      button.setAttribute("disabled", "disabled")
+      button.disabled = true
+      document.getElementById('editButton').disabled = true
+      disableCheckBoxes()
+      disableSlider()
       removeWarning(domain)
     }
   });
+}
+
+function disableSlider() {
+  var slider = document.getElementById("snooze");
+  var label = document.getElementById("snoozeLabel");
+
+  slider.disabled = true
+  label.setAttribute("class", "disabledSliderLabel")
 }
 
 function setActionButtonLabel(button, domain) {
@@ -78,11 +91,22 @@ function showCurrentWarningDays(value) {
   }
 }
 
+function disableCheckBoxes() {
+  var checkboxes = document.getElementsByName('day');
+  for (var i = 0; i < checkboxes.length; ++i) {
+    let day = checkboxes[i]
+    day.disabled = true
+  }
+}
+
 function removeWarning(domain) {
   if (localStorage.sites) {
     var sites = JSON.parse(localStorage.sites);
     if (sites[domain]) {
       delete sites[domain]
+      if(Object.keys(sites).length == 0) {
+        localStorage.snoozeTime = 10
+      }
       localStorage.sites = JSON.stringify(sites);
     }
   }
@@ -122,4 +146,19 @@ function addWarning(domain) {
   }
   sites[domain] = value
   localStorage.sites = JSON.stringify(sites);
+}
+
+function setSliderListener() {
+  if(!localStorage.snoozeTime) {
+    localStorage.snoozeTime = 10
+  }
+  var slider = document.getElementById("snooze");
+  var label = document.getElementById("snoozeValue");
+  slider.value = localStorage.snoozeTime
+  label.innerHTML = slider.value;
+
+  slider.oninput = () => {
+    snoozeValue.innerHTML = slider.value;
+    localStorage.snoozeTime = slider.value;
+  }
 }
