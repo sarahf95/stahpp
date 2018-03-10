@@ -33,8 +33,11 @@
       <input type="checkbox" name="day" value="fri" checked>Friday</input> <br />
       <input type="checkbox" name="day" value="sat" checked>Saturday</input> <br />
     </form>
-    <input type="range" min="1" max="60" value="10" class="slider" id="snooze"> <br />
     <button type=button id="editButton">Edit</button>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="60" value="10" id="snooze"> <br />
+      <p id= "snoozeLabel">Snooze Time: <span id="snoozeValue"></span></p>
+    </div>
     <button type=button id="actionButton"></button>
   </div>
 

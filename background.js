@@ -9,6 +9,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!localStorage.sites) {
         localStorage.sites = JSON.stringify({})
     }
+    if(!localStorage.snoozeTime) {
+        localStorage.snoozeTime = 10
+    }
     var sites = JSON.parse(localStorage.sites);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         let tab = tabs[0]
@@ -24,8 +27,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             if (value && value[indexToDayOfWeek[dow]]) {
                 let start = startTime.getTime()
                 let curr = date.getTime()
-                // if(curr - start >= 600000) {
-                if (curr - start >= 5000) {   // TESTING ONLY - 5 seconds
+                // if(curr - start >= 60000 * localStorage.snoozeTime) {
+                if (curr - start >= 1000 * localStorage.snoozeTime) {   // TESTING ONLY - 5 seconds
                     let totTime = curr - start
                     // let mins = Math.round(((totTime % 86400000) % 3600000) / 60000);
                     let mins = Math.round(((totTime % 86400000) % 3600000) / 1000); // TESTING ONLY - seconds
@@ -44,6 +47,9 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     if (!localStorage.sites) {
         localStorage.sites = JSON.stringify({})
     }
+    if(!localStorage.snoozeTime) {
+        localStorage.snoozeTime = 10
+    }
     chrome.tabs.get(activeInfo.tabId, (tab) => {
         let domain = new URL(tab.url).hostname
         if (domain != currentDomain) {
@@ -61,8 +67,8 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             if (value && value[indexToDayOfWeek[dow]]) {
                 let start = startTime.getTime()
                 let curr = date.getTime()
-                // if(curr - start >= 600000) {
-                if (curr - start >= 5000) {   // TESTING ONLY - 5 seconds
+                // if(curr - start >= 60000 * localStorage.snoozeTime) {
+                if (curr - start >= 1000 * localStorage.snoozeTime) {   // TESTING ONLY - seconds
                     let totTime = curr - start
                     // let mins = Math.round(((totTime % 86400000) % 3600000) / 60000);
                     let mins = Math.round(((totTime % 86400000) % 3600000) / 1000); // TESTING ONLY - seconds
