@@ -152,44 +152,37 @@ function removeWarning(domain) {
 
 
 function setEditButtonListener(button, domain) {
-  if(button.className = "edit"){
-    button.innerHTML = "Edit";
+  if (button.className = "edit") {
+    button.innerHTML = "Edit"
   }
   button.addEventListener('click', () => {
 
-    if (button.className = "save") {
+    if (button.className === "save") {
       console.log("document", document)
-      document.getElementById("editButton").setAttribute("class", "saved");
-      document.getElementById("editButton").innerHTML = "Saved";
+      document.getElementById("editButton").setAttribute("class", "saved")
+      document.getElementById("editButton").innerHTML = "Saved"
       if (localStorage.sites) {
-        var sites = JSON.parse(localStorage.sites);
+        var sites = JSON.parse(localStorage.sites)
         if (sites[domain]) {
           var value = sites[domain]
-          var checkboxes = document.getElementsByName('day');
+          var checkboxes = document.getElementsByName('day')
           for (var i = 0; i < checkboxes.length; ++i) {
             let day = checkboxes[i]
             let dow = day.value
             value[dow] = day.checked
           }
           sites[domain] = value
-          localStorage.sites = JSON.stringify(sites);
-
+          localStorage.sites = JSON.stringify(sites)
         }
-
       }
-
-
     }
-   if (button.className = "edit") {
-    button.setAttribute("class", "save");
-    button.innerHTML = "Save";
-      enableCheckBoxes();
-      enableSlider();
-
-      button.disabled = false;
+    else if (button.className === "edit") {
+      button.setAttribute("class", "save")
+      button.innerHTML = "Save";
+      enableCheckBoxes()
+      enableSlider()
+      button.disabled = false
     }
-
-
   })
 }
 
