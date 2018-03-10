@@ -23,17 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
     setActionButtonListener(actionButton, domain)
 
     toggleEditButton(editButton, actionButton)
+    setEditButtonLabel(editButton, domain)
     setEditButtonListener(editButton, domain)
-
     setSliderListener()
   });
 });
+
+
+
 
 function toggleEditButton(edit, action) {
   if (action.className == "addWarning") {
     edit.style.display = "none";
   } else if (action.className == "removeWarning") {
     edit.style.display = "block";
+    edit.setAttribute("class", "edit")
   }
 }
 
@@ -64,6 +68,14 @@ function disableSlider() {
   label.setAttribute("class", "disabledSliderLabel")
 }
 
+function enableSlider() {
+  var slider = document.getElementById("snooze");
+  var label = document.getElementById("snoozeLabel");
+
+  slider.disabled = false
+  label.setAttribute("class", "disabledSliderLabel")
+}
+
 function setActionButtonLabel(button, domain) {
   if (localStorage.sites) {
     var sites = JSON.parse(localStorage.sites)
@@ -79,6 +91,17 @@ function setActionButtonLabel(button, domain) {
   } else {
     button.innerHTML = "Set Warnings";
     button.setAttribute("class", "addWarning")
+  }
+}
+
+function setEditButtonLabel(editButton, domain) {
+  if (editButton.className = "edit") {
+    disableCheckBoxes();
+    disableSlider();
+    editButton.innerHTML = "Edit";
+  } else if(editButton.className = "save"){
+    editButton.innerHTML = "Save"
+    editButton.setAttribute("class", "save")
   }
 }
 
@@ -99,12 +122,20 @@ function disableCheckBoxes() {
   }
 }
 
+function enableCheckBoxes() {
+  var checkboxes = document.getElementsByName('day');
+  for (var i = 0; i < checkboxes.length; ++i) {
+    let day = checkboxes[i]
+    day.disabled = false
+  }
+}
+
 function removeWarning(domain) {
   if (localStorage.sites) {
     var sites = JSON.parse(localStorage.sites);
     if (sites[domain]) {
       delete sites[domain]
-      if(Object.keys(sites).length == 0) {
+      if (Object.keys(sites).length == 0) {
         localStorage.snoozeTime = 10
       }
       localStorage.sites = JSON.stringify(sites);
@@ -115,20 +146,37 @@ function removeWarning(domain) {
 
 function setEditButtonListener(button, domain) {
   button.addEventListener('click', () => {
-    if (localStorage.sites) {
-      var sites = JSON.parse(localStorage.sites);
-      if (sites[domain]) {
-        var value = sites[domain]
-        var checkboxes = document.getElementsByName('day');
-        for (var i = 0; i < checkboxes.length; ++i) {
-          let day = checkboxes[i]
-          let dow = day.value
-          value[dow] = day.checked
+
+    if (button.className = "edit") {
+      enableCheckBoxes();
+      enableSlider();
+      button.setAttribute("class", "save");
+      button.innerHTML = "Save";
+      button.disabled = false;
+    } 
+    
+    // else if (button.className = "save")  {
+    //   alert("saved")
+    //   button.innerHTML = "Saved";
+    //   button.setAttribute("class", "saved");
+      if (localStorage.sites) {
+        var sites = JSON.parse(localStorage.sites);
+        if (sites[domain]) {
+          var value = sites[domain]
+          var checkboxes = document.getElementsByName('day');
+          for (var i = 0; i < checkboxes.length; ++i) {
+            let day = checkboxes[i]
+            let dow = day.value
+            value[dow] = day.checked
+          }
+          sites[domain] = value
+          localStorage.sites = JSON.stringify(sites);
+
         }
-        sites[domain] = value
-        localStorage.sites = JSON.stringify(sites);
+
       }
-    }
+
+    // }
   })
 }
 
@@ -149,7 +197,7 @@ function addWarning(domain) {
 }
 
 function setSliderListener() {
-  if(!localStorage.snoozeTime) {
+  if (!localStorage.snoozeTime) {
     localStorage.snoozeTime = 10
   }
   var slider = document.getElementById("snooze");

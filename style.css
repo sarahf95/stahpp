@@ -57,7 +57,7 @@ body {
     font-size: 7vw;
     border-radius: 12px;
     text-align: center;
-    background-color: #cfe0ec;
+    background-color: #8ab9db;
     margin-bottom: 10px;
   }
 
@@ -114,4 +114,8 @@ body {
 
   .disabledSliderLabel {
     color: #656565
+  }
+
+  .saved{
+    background-color: #b0d8f5
   }
