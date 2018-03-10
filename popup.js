@@ -199,7 +199,7 @@ function addWarning(domain) {
 
 // updates snooze time based on slider position
 function setSliderListener(domain) {
-  if(!localStorage.snoozeTime) {
+  if (!localStorage.snoozeTime) {
     localStorage.snoozeTime = 10
   }
   var sites = JSON.parse(localStorage.sites)
@@ -209,11 +209,7 @@ function setSliderListener(domain) {
   label.innerHTML = slider.value;
 
   slider.oninput = () => {
-    if(sites[domain]) {
-      snoozeValue.innerHTML = slider.value;
-      localStorage.snoozeTime = slider.value;
-    } else {
-      disableSlider()
-    }
+    snoozeValue.innerHTML = slider.value;
+    localStorage.snoozeTime = slider.value;
   }
 }
