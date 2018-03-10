@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setActionButtonListener(actionButton, domain)
 
     toggleEditButton(editButton, actionButton)
-    setEditButtonLabel(editButton, domain)
     setEditButtonListener(editButton, domain)
     setSliderListener()
   });
@@ -35,9 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
 function toggleEditButton(edit, action) {
   if (action.className == "addWarning") {
     edit.style.display = "none";
+    enableCheckBoxes();
+    enableSlider();
   } else if (action.className == "removeWarning") {
     edit.style.display = "block";
     edit.setAttribute("class", "edit")
+    disableCheckBoxes()
+    disableSlider()
   }
 }
 
@@ -94,16 +97,20 @@ function setActionButtonLabel(button, domain) {
   }
 }
 
-function setEditButtonLabel(editButton, domain) {
-  if (editButton.className = "edit") {
-    disableCheckBoxes();
-    disableSlider();
-    editButton.innerHTML = "Edit";
-  } else if(editButton.className = "save"){
-    editButton.innerHTML = "Save"
-    editButton.setAttribute("class", "save")
-  }
-}
+// function setEditButtonLabel(editButton, domain) {
+//   if (editButton.className = "edit") {
+//     disableCheckBoxes();
+//     disableSlider();
+//     editButton.innerHTML = "Edit";
+//   } else if(editButton.className = "none"){
+//     enableCheckBoxes();
+//     enableSlider();
+//   }
+//   // } else if(editButton.className = "save"){
+//   //   editButton.innerHTML = "Save"
+//   //   editButton.setAttribute("class", "save")
+//   // }
+// }
 
 function showCurrentWarningDays(value) {
   var checkboxes = document.getElementsByName('day');
@@ -145,8 +152,12 @@ function removeWarning(domain) {
 
 
 function setEditButtonListener(button, domain) {
+  if(button.className = "edit"){
+    button.innerHTML = "Edit";
+  }
   button.addEventListener('click', () => {
-    if(button.className = "save"){
+
+    if (button.className = "save") {
       console.log("document", document)
       document.getElementById("editButton").setAttribute("class", "saved");
       document.getElementById("editButton").innerHTML = "Saved";
@@ -168,21 +179,17 @@ function setEditButtonListener(button, domain) {
       }
 
 
-    } else if (button.className = "edit") {
+    }
+   if (button.className = "edit") {
+    button.setAttribute("class", "save");
+    button.innerHTML = "Save";
       enableCheckBoxes();
       enableSlider();
-      button.setAttribute("class", "save");
-      button.innerHTML = "Save";
+
       button.disabled = false;
-    } 
-    
-    // else if (button.className = "save")  {
-    //   alert("saved")
-    //   button.innerHTML = "Saved";
-    //   button.setAttribute("class", "saved");
+    }
 
 
-    // }
   })
 }
 
