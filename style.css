@@ -58,7 +58,7 @@ body {
     border-radius: 12px;
     text-align: center;
     background-color: #cfe0ec;
-    margin-bottom: 10;
+    margin-bottom: 10px;
   }
 
   .addWarning{
@@ -103,4 +103,15 @@ body {
     font-size: 4.5vw;
     vertical-align: middle;
     background-color: #d1d6d9;
+  }
+
+#snoozeLabel {
+  font-family: 'Roboto', sans-serif;
+  font-size: 6vw;
+  font-weight: 300;
+  margin-top: 5px;
+}
+
+  .disabledSliderLabel {
+    color: #656565
   }
