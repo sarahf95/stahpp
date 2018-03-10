@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleEditButton(editButton, actionButton)
     setEditButtonListener(editButton, domain)
 
-    setSliderListener()
+    setSliderListener(domain)
   });
 });
 
@@ -148,17 +148,22 @@ function addWarning(domain) {
   localStorage.sites = JSON.stringify(sites);
 }
 
-function setSliderListener() {
+function setSliderListener(domain) {
   if(!localStorage.snoozeTime) {
     localStorage.snoozeTime = 10
   }
+  var sites = JSON.parse(localStorage.sites)
   var slider = document.getElementById("snooze");
   var label = document.getElementById("snoozeValue");
   slider.value = localStorage.snoozeTime
   label.innerHTML = slider.value;
 
   slider.oninput = () => {
-    snoozeValue.innerHTML = slider.value;
-    localStorage.snoozeTime = slider.value;
+    if(sites[domain]) {
+      snoozeValue.innerHTML = slider.value;
+      localStorage.snoozeTime = slider.value;
+    } else {
+      disableSlider()
+    }
   }
 }
