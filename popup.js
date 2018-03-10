@@ -146,19 +146,10 @@ function removeWarning(domain) {
 
 function setEditButtonListener(button, domain) {
   button.addEventListener('click', () => {
-
-    if (button.className = "edit") {
-      enableCheckBoxes();
-      enableSlider();
-      button.setAttribute("class", "save");
-      button.innerHTML = "Save";
-      button.disabled = false;
-    } 
-    
-    // else if (button.className = "save")  {
-    //   alert("saved")
-    //   button.innerHTML = "Saved";
-    //   button.setAttribute("class", "saved");
+    if(button.className = "save"){
+      console.log("document", document)
+      document.getElementById("editButton").setAttribute("class", "saved");
+      document.getElementById("editButton").innerHTML = "Saved";
       if (localStorage.sites) {
         var sites = JSON.parse(localStorage.sites);
         if (sites[domain]) {
@@ -175,6 +166,21 @@ function setEditButtonListener(button, domain) {
         }
 
       }
+
+
+    } else if (button.className = "edit") {
+      enableCheckBoxes();
+      enableSlider();
+      button.setAttribute("class", "save");
+      button.innerHTML = "Save";
+      button.disabled = false;
+    } 
+    
+    // else if (button.className = "save")  {
+    //   alert("saved")
+    //   button.innerHTML = "Saved";
+    //   button.setAttribute("class", "saved");
+
 
     // }
   })
