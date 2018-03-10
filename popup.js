@@ -29,9 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-
-
+// toggle between edit and save of the settings depending on whether 
+// a warning is previously set
 function toggleEditButton(edit, action) {
   if (action.className == "addWarning") {
     edit.style.display = "none";
@@ -45,6 +44,7 @@ function toggleEditButton(edit, action) {
   }
 }
 
+// set listener for button that adds and removes warnings
 function setActionButtonListener(button, domain) {
   button.addEventListener('click', () => {
     if (button.className == "addWarning") {
@@ -72,6 +72,7 @@ function disableSlider() {
   label.setAttribute("class", "disabledSliderLabel")
 }
 
+
 function enableSlider() {
   var slider = document.getElementById("snooze");
   var label = document.getElementById("snoozeLabel");
@@ -80,6 +81,8 @@ function enableSlider() {
   label.setAttribute("class", "disabledSliderLabel")
 }
 
+// Set the button label based on whether the site is 
+// currently has a warning set
 function setActionButtonLabel(button, domain) {
   if (localStorage.sites) {
     var sites = JSON.parse(localStorage.sites)
@@ -98,6 +101,9 @@ function setActionButtonLabel(button, domain) {
   }
 }
 
+// set the checkboxes to the previously set days
+// if the site doesn't have a warning, set all 
+// boxes to checked
 function showCurrentWarningDays(value) {
   var checkboxes = document.getElementsByName('day');
   for (var i = 0; i < checkboxes.length; ++i) {
@@ -136,7 +142,8 @@ function removeWarning(domain) {
   }
 }
 
-
+// Change text of edit button depending on current state of editing. 
+// These states include: before editing, currently editing, and saved changes
 function setEditButtonListener(button, domain) {
   if (button.className = "edit") {
     button.innerHTML = "Edit"
@@ -147,6 +154,7 @@ function setEditButtonListener(button, domain) {
       console.log("document", document)
       document.getElementById("editButton").setAttribute("class", "saved")
       document.getElementById("editButton").innerHTML = "Saved"
+      // save user preferences for warning days to localStorage
       if (localStorage.sites) {
         var sites = JSON.parse(localStorage.sites)
         if (sites[domain]) {
@@ -172,6 +180,7 @@ function setEditButtonListener(button, domain) {
   })
 }
 
+// add site and user settings to localstorage when block is set
 function addWarning(domain) {
   if (!localStorage.sites) {
     localStorage.sites = JSON.stringify({})
@@ -188,6 +197,7 @@ function addWarning(domain) {
   localStorage.sites = JSON.stringify(sites);
 }
 
+// updates snooze time based on slider position
 function setSliderListener(domain) {
   if(!localStorage.snoozeTime) {
     localStorage.snoozeTime = 10
