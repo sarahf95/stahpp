@@ -21,14 +21,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             }
         } else if (domain == currentDomain) {
             let value = sites[domain]
-            if (value) {
+            if (value && value[indexToDayOfWeek[dow]]) {
                 let start = startTime.getTime()
                 let curr = date.getTime()
-                if(curr - start >= 600000) {
-                // if(curr - start >= 5000) {   // TESTING ONLY - 5 seconds
+                // if(curr - start >= 600000) {
+                if (curr - start >= 5000) {   // TESTING ONLY - 5 seconds
                     let totTime = curr - start
-                    let mins = Math.round(((totTime % 86400000) % 3600000) / 60000);
-                    // let mins = Math.round(((totTime % 86400000) % 3600000) / 1000); // TESTING ONLY - seconds
+                    // let mins = Math.round(((totTime % 86400000) % 3600000) / 60000);
+                    let mins = Math.round(((totTime % 86400000) % 3600000) / 1000); // TESTING ONLY - seconds
                     alert(`You have spent ${mins} minutes on this site since the last warning.`)
                     startTime = new Date()
                 }
@@ -46,13 +46,29 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     }
     chrome.tabs.get(activeInfo.tabId, (tab) => {
         let domain = new URL(tab.url).hostname
-        currentDomain = domain
-        if (localStorage.sites) {
-            var sites = JSON.parse(localStorage.sites);
+        if (domain != currentDomain) {
+            currentDomain = domain
+            if (localStorage.sites) {
+                var sites = JSON.parse(localStorage.sites);
+                let value = sites[domain]
+                if (value && value[indexToDayOfWeek[dow]]) {
+                    alert(`Are you sure you want to spend time at ${domain}???`)
+                    startTime = date
+                }
+            }
+        } else if (domain == currentDomain) {
             let value = sites[domain]
             if (value && value[indexToDayOfWeek[dow]]) {
-                alert(`Are you sure you want to spend time at ${domain}???`)
-                startTime = date
+                let start = startTime.getTime()
+                let curr = date.getTime()
+                // if(curr - start >= 600000) {
+                if (curr - start >= 5000) {   // TESTING ONLY - 5 seconds
+                    let totTime = curr - start
+                    // let mins = Math.round(((totTime % 86400000) % 3600000) / 60000);
+                    let mins = Math.round(((totTime % 86400000) % 3600000) / 1000); // TESTING ONLY - seconds
+                    alert(`You have spent ${mins} minutes on this site since the last warning.`)
+                    startTime = new Date()
+                }
             }
         }
     })
