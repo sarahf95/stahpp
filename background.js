@@ -1,6 +1,7 @@
 var currentDomain = ""
 let indexToDayOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
 var startTime = null
+var sentAlert = false
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     let date = new Date()
@@ -20,12 +21,16 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             }
         } else if (domain == currentDomain) {
             let value = sites[domain]
-            if (value && value[indexToDayOfWeek[dow]]) {
+            if (value) {
                 let start = startTime.getTime()
                 let curr = date.getTime()
-                // if(curr - start >= 600000) {
-                if (curr - start >= 10000) {
-                    alert(`You have spent over 10 minutes on this site since the last warning. `)
+                if(curr - start >= 600000) {
+                // if(curr - start >= 5000) {   // TESTING ONLY - 5 seconds
+                    let totTime = curr - start
+                    let mins = Math.round(((totTime % 86400000) % 3600000) / 60000);
+                    // let mins = Math.round(((totTime % 86400000) % 3600000) / 1000); // TESTING ONLY - seconds
+                    alert(`You have spent ${mins} minutes on this site since the last warning.`)
+                    startTime = new Date()
                 }
             }
         }
@@ -52,16 +57,3 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         }
     })
 })
-
-// function updateTime(site, seconds){
-//     if (!localStorage.sites) {
-//        localStorage.sites = JSON.stringify({});
-//      }
-
-//       var sites = JSON.parse(localStorage.sites);
-//      if (!sites[site]) {
-//        sites[site] = 0;
-//      }
-//      sites[site] = sites[site] + seconds;
-//      localStorage.sites = JSON.stringify(sites);  
-//  }
